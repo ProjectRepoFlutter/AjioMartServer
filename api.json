@@ -12,6 +12,65 @@
         }
     ],
     "paths": {
+        "/users/sendOtp": {
+            "post": {
+                "summary": "Send Otp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "phone"
+                                ]
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Otp sent successfully. ",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "500": {
+                            "description": "Internal server error",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "post": {
                 "summary": "Register User",
@@ -106,7 +165,7 @@
                                     "phone": {
                                         "type": "string"
                                     },
-                                    "verificationCode": {
+                                    "otp": {
                                         "type": "string"
                                     }
                                 },
