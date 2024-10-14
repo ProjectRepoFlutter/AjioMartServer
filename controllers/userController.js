@@ -14,21 +14,23 @@ exports.sendOtp = async (req, res) => {
     // Send verification code
     const existingUser = await Otp.findOne({ $or: [{ email }, { phone }] });
     let otpEntry;
-    if (existingUser) { 
+    if (existingUser) {
       console.log("Found existing user");
-      existingUser.otp = verificationCode; } else {
+      existingUser.otp = verificationCode;
+      await existingUser.save();
+    } else {
       console.log("saving new Otp");
       if (/\S+@\S+\.\S+/.test(identifier)) {
         // If identifier matches email pattern
         otpEntry = new Otp({ email: identifier, otp: verificationCode });
-    } else {
+      } else {
         // Treat identifier as a phone number
         otpEntry = new Otp({ phone: identifier, otp: verificationCode });
-    }
+      }
       console.log("saving in mongoDB");
       await otpEntry.save();
     }
-
+    
     console.log("sending Verification");
     await sendVerificationCode(identifier, verificationCode);
     console.log("verification sent");
@@ -42,7 +44,7 @@ exports.sendOtp = async (req, res) => {
 exports.registerUser = async (req, res) => {
   const { email, phone, firstName, lastName } = req.body;
   const identifier = email || phone;
-  
+
   try {
     // Check if the user already exists
     console.log("Finding User");
