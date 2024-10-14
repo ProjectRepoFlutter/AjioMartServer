@@ -12,31 +12,38 @@ exports.sendOtp = async (req, res) => {
     const verificationCode = crypto.randomBytes(3).toString('hex'); // Generate a random verification code
     console.log("Generated Verification");
     // Send verification code
-    const existingUser = await Otp.findOne({ $or: [{ email }, { phone }] });
-    let otpEntry;
+    console.log(identifier);
+    const existingUser = await Otp.findOne({ $or: [{ email: identifier }, { phone: identifier }] });
+    console.log(existingUser);
     if (existingUser) {
       console.log("Found existing user");
       existingUser.otp = verificationCode;
       await existingUser.save();
     } else {
       console.log("saving new Otp");
+      let otpEntry;
       if (/\S+@\S+\.\S+/.test(identifier)) {
         // If identifier matches email pattern
+        console.log("checking mail",identifier);
         otpEntry = new Otp({ email: identifier, otp: verificationCode });
-      } else {
-        // Treat identifier as a phone number
+      } else if (/^\d{10}$/.test(identifier)) {
+        // If identifier matches phone number pattern, only save phone and exclude email
+        console.log("checking phone",identifier);
         otpEntry = new Otp({ phone: identifier, otp: verificationCode });
+      } else {
+        return res.status(400).json({ message: 'Invalid email or phone number format.' });
       }
       console.log("saving in mongoDB");
       await otpEntry.save();
     }
-    
+
     console.log("sending Verification");
     await sendVerificationCode(identifier, verificationCode);
     console.log("verification sent");
     return res.status(200).json({ message: 'Otp sent successfully.' });
 
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -78,7 +85,7 @@ exports.verifyUser = async (req, res) => {
   const identifier = email || phone;
 
   try {
-    const user = await Otp.findOne({ $or: [{ email }, { phone }] });
+    const user = await Otp.findOne({ $or: [{ email:identifier }, { phone:identifier }] });
     console.log(user.otp);
     console.log(otp);
     if (!user || user.otp !== otp) {
@@ -103,7 +110,7 @@ exports.loginUser = async (req, res) => {
   const identifier = email || phone;
 
   try {
-    const user = await User.findOne({ $or: [{ email }, { phone }] });
+    const user = await User.findOne({ $or: [{ email:identifier }, { phone:identifier }] });
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
