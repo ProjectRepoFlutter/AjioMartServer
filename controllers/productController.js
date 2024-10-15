@@ -18,10 +18,22 @@ exports.createProduct = async (req, res) => {
     }
 };
 
+// Get all products by category id
+exports.getCategoryProducts = async (req, res) => {
+    const{ id } = req.params; 
+    try {
+        const products = await Product.find({categoryId:id});
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
 // Get all products
 exports.getAllProducts = async (req, res) => {
+    const{ id } = req.params; 
     try {
-        const products = await Product.find().populate('category');
+        const products = await Product.find({});
         res.json(products);
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
