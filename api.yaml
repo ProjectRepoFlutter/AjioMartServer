@@ -57,7 +57,9 @@ paths:
                   type: string
                 phone:
                   type: string
-                name:
+                firstName:
+                  type: string
+                lastName:
                   type: string
               required:
                 - email
@@ -220,8 +222,15 @@ paths:
               properties:
                 name:
                   type: string
+                categoryId:
+                  type: string
+                description:
+                  type: string
+                imageUrl:
+                  type: string
               required:
                 - name
+                - categoryId
       responses:
         "201":
           description: Category created successfully
@@ -293,9 +302,9 @@ paths:
                   error:
                     type: string
     put:
-      summary: Update Category
+      summary: Update Category send in the body whatever you want to update
       parameters:
-        - name: id
+        - name: id  
           in: path
           required: true
           schema:
@@ -357,7 +366,7 @@ paths:
     delete:
       summary: Delete Category
       parameters:
-        - name: id
+        - name: categoryId
           in: path
           required: true
           schema:
