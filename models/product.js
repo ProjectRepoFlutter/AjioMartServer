@@ -26,8 +26,7 @@ const productSchema = new mongoose.Schema({
     min: 0 // Ensures stock is non-negative
   },
   categoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category', // Reference to Category model
+    type: String,
     required: true // CategoryId is required
   },
   imageUrl: {

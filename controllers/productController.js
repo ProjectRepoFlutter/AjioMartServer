@@ -1,11 +1,16 @@
 const Product = require('../models/product');
+const Category = require('../models/category');
 
 // Create a new product
 exports.createProduct = async (req, res) => {
-    const { name, description, price, category, stock, image } = req.body;
+    const { name,productId, description, price, categoryId, stock, image } = req.body;
 
     try {
-        const product = new Product({ name, description, price, category, stock, image });
+        const categoryExists = await Category.findOne({ categoryId:categoryId });
+        if (!categoryExists) {
+            return res.status(400).json({ error: 'Invalid categoryId: Category not found' });
+        }
+        const product = new Product({ name,productId, description, price, categoryId, stock, image });
         await product.save();
         res.status(201).json({ message: 'Product created successfully', product });
     } catch (err) {
@@ -28,7 +33,7 @@ exports.getProductById = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const product = await Product.findById(id).populate('category');
+        const product = await Product.findOne({ productId:id });
         if (!product) return res.status(404).json({ message: 'Product not found' });
         res.json(product);
     } catch (err) {

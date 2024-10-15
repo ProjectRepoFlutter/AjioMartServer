@@ -47,6 +47,7 @@ exports.updateCategory = async (req, res) => {
     } catch (err) {
         res.status(400).json({ message: 'Error updating category', error: err.message });
     }
+
 };
 
 // Delete a category
@@ -60,4 +61,5 @@ exports.deleteCategory = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
+
 };
