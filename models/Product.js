@@ -1,25 +1,63 @@
 const mongoose = require('mongoose');
 
-const ProductSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: {
+const productSchema = new mongoose.Schema({
+  productId: {
     type: String,
     required: true,
-},
-  price: { type: Number, required: true },
-  category: {
+    unique: true, // Ensures productId is unique
+    trim: true // Removes any extra spaces from productId
+  },
+  name: {
+    type: String,
+    required: true, // Product name is required
+    trim: true
+  },
+  description: {
+    type: String,
+    trim: true // Optional description field for the product
+  },
+  price: {
+    type: Number,
+    required: true // Price is required for the product
+  },
+  stock: {
+    type: Number,
+    required: true, // Stock quantity is required
+    min: 0 // Ensures stock is non-negative
+  },
+  categoryId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-},
-  stock: { type: Number, required: true },
-  image: {
-    type: String, // URL of the image
-},
-ratings: [{
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  rating: { type: Number, min: 1, max: 5 },
-  comment: String,
-}],
+    ref: 'Category', // Reference to Category model
+    required: true // CategoryId is required
+  },
+  imageUrl: {
+    type: String, // Optional field for storing the product image URL
+    trim: true
+  },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    default: 0 // Default rating is 0, out of 5
+  },
+  ratingCount: {
+    type: Number,
+    default: 0 // Tracks the number of ratings
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now // Automatically sets the creation date
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now // Automatically sets the update date
+  }
 });
 
-module.exports = mongoose.model('Product', ProductSchema);
+// Middleware to set 'updatedAt' on document update
+productSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+module.exports = mongoose.model('Product', productSchema);
