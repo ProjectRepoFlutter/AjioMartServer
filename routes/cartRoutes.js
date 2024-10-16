@@ -10,9 +10,9 @@ router.post('/', cartController.addToCart);
 router.get('/:emailOrPhone', cartController.getCart);
 
 // Remove item from cart (DELETE /cart/:productId)
-// router.delete('/:productId', cartController.removeItemFromCart);
+router.delete('/:productId', cartController.removeItem);
 
 // Update item quantity in cart (PUT /cart/:productId)
-// router.put('/:productId', cartController.updateCartItemQuantity);
+router.put('/', cartController.updateItemQuantity);
 
 module.exports = router;

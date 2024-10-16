@@ -48,7 +48,7 @@ exports.addToCart = async (req, res) => {
 exports.getCart = async (req, res) => {
     try {
         const userId = req.params.emailOrPhone; // Assuming userId comes from the authenticated session
-        const cart = await Cart.findOne({ user:userId });
+        const cart = await Cart.findOne({ user: userId });
 
         if (!cart) {
             return res.status(404).json({ message: 'Cart is empty' });
@@ -57,5 +57,61 @@ exports.getCart = async (req, res) => {
         res.status(200).json(cart);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching cart', error });
+    }
+}
+
+//remove item form cart
+exports.removeItem = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        console.log("1");
+        const userId = req.headers['user'];
+        console.log(userId);
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+        console.log("deleting now");
+        const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+        console.log("deleting");
+        if (itemIndex > -1) {
+            const item = cart.items[itemIndex];
+            cart.totalQuantity -= item.quantity;
+            cart.totalPrice -= item.price;
+            cart.items.splice(itemIndex, 1);
+
+            await cart.save();
+            res.status(200).json(cart);
+        } else {
+            res.status(404).json({ message: 'Item not found in cart' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error removing item from cart', error });
+    }
+};
+
+//update item quantity
+exports.updateItemQuantity = async (req, res) => {
+    try {
+        const { productId, quantity, user } = req.body;
+        const cart = await Cart.findOne({ user }).populate('items.productId', 'price');
+        if (!cart) return res.status(404).json({ message: 'Cart not found' });
+        const product = await Product.findOne({ productId });
+        const itemIndex = cart.items.findIndex(item => item.productId === productId);
+        console.log(itemIndex);
+        if (itemIndex > -1) {
+            const cartItem = cart.items[itemIndex];
+            const difference = parseInt(cart.totalPrice) - parseInt(cartItem.price);
+            cartItem.quantity = Number(quantity);
+            cartItem.price = Number(quantity) * parseInt(product.price);
+            cart.totalPrice = difference + parseInt(cartItem.price);
+
+            await cart.save();
+            res.status(200).json(cart);
+        } else {
+            res.status(404).json({ message: 'Item not found in cart' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating item quantity', error });
     }
 }
