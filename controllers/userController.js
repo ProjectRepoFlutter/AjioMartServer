@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Otp = require('../models/otpModel')
 const crypto = require('crypto');
+const { search } = require('../routes/userRoutes');
 const sendVerificationCode = require('../utils/notification').sendVerificationCode; // Utility to send SMS or email
 
 //sendOtp
@@ -24,11 +25,11 @@ exports.sendOtp = async (req, res) => {
       let otpEntry;
       if (/\S+@\S+\.\S+/.test(identifier)) {
         // If identifier matches email pattern
-        console.log("checking mail",identifier);
+        console.log("checking mail", identifier);
         otpEntry = new Otp({ email: identifier, otp: verificationCode });
       } else if (/^\d{10}$/.test(identifier)) {
         // If identifier matches phone number pattern, only save phone and exclude email
-        console.log("checking phone",identifier);
+        console.log("checking phone", identifier);
         otpEntry = new Otp({ phone: identifier, otp: verificationCode });
       } else {
         return res.status(400).json({ message: 'Invalid email or phone number format.' });
@@ -55,7 +56,7 @@ exports.registerUser = async (req, res) => {
   try {
     // Check if the user already exists
     console.log("Finding User");
-    const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+    const existingUser = await User.findOne({ $or: [{ email: email }, { phone: phone }] });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
@@ -85,7 +86,7 @@ exports.verifyUser = async (req, res) => {
   const identifier = email || phone;
 
   try {
-    const user = await Otp.findOne({ $or: [{ email:identifier }, { phone:identifier }] });
+    const user = await Otp.findOne({ $or: [{ email: identifier }, { phone: identifier }] });
     console.log(user.otp);
     console.log(otp);
     if (!user || user.otp !== otp) {
@@ -110,7 +111,7 @@ exports.loginUser = async (req, res) => {
   const identifier = email || phone;
 
   try {
-    const user = await User.findOne({ $or: [{ email:identifier }, { phone:identifier }] });
+    const user = await User.findOne({ $or: [{ email: identifier }, { phone: identifier }] });
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
@@ -126,5 +127,26 @@ exports.loginUser = async (req, res) => {
     return res.status(200).json({ message: 'Login successful!' });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+//get user
+exports.getUser = async (req, res) => {
+  const identifier = req.params.emailOrPhone;
+
+  if (!identifier) {
+    return res.status(400).json({ message: 'Email or phone number is required' });
+  }
+
+  try {
+    const searchCriteria = identifier.includes('@') ? { email: identifier } : { phone: identifier };
+    const user = await User.findOne(searchCriteria);
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+    return res.status(200).json({ user });
+  }
+  catch (err) {
+    res.status(400).json({ message: 'Error fetching user', error: err.message });
   }
 };

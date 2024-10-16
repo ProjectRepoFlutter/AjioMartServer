@@ -31,7 +31,6 @@ exports.getCategoryProducts = async (req, res) => {
 
 // Get all products
 exports.getAllProducts = async (req, res) => {
-    const{ id } = req.params; 
     try {
         const products = await Product.find({});
         res.json(products);
@@ -58,8 +57,8 @@ exports.updateProduct = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedProduct) return res.status(404).json({ message: 'Product not found' });
+        const updatedProduct = await Product.updateOne({productId:id},{$set: req.body}, { new: true });
+        if (updatedProduct.matchedCount==0) return res.status(404).json({ message: 'Product not found' });
         res.json({ message: 'Product updated successfully', updatedProduct });
     } catch (err) {
         res.status(400).json({ message: 'Error updating product', error: err.message });
