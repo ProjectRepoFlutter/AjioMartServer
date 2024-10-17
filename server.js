@@ -7,6 +7,7 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const addressRoutes = require('./routes/addressRoutes');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -25,7 +26,9 @@ app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/categories', categoryRoutes);
-app.use('/cart',cartRoutes);
+app.use('/cart', cartRoutes);
+app.use('/address', addressRoutes);
+app.use('/orders',orderRoutes);
 
 // Start the server
 app.listen(PORT, () => {
