@@ -5,6 +5,10 @@ const addressSchema = new mongoose.Schema({
         type: String, // Reference to the user
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
     label: {
         type: String,  // e.g., 'Home', 'Office', 'Other'
         required: true

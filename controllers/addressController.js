@@ -2,9 +2,9 @@ const Address = require('../models/address');
 
 exports.addAddress = async (req, res) => {
     try {
-        const { user, label, addressLine1, addressLine2, city, state, postalCode, phoneNumber, isDefault } = req.body;
+        const { name,user, label, addressLine1, addressLine2, city, state, postalCode, phoneNumber, isDefault } = req.body;
         // Validate required fields
-        if (!label || !addressLine1 || !city || !state || !postalCode || !phoneNumber) {
+        if (!name||!label || !addressLine1 || !city || !state || !postalCode || !phoneNumber) {
             return res.status(400).json({ message: "All required fields must be provided" });
         }
         // If the user sets the new address as default, make sure other addresses are updated
@@ -16,6 +16,7 @@ exports.addAddress = async (req, res) => {
         }
 
         const newAddress = new Address({
+            name:name,
             user: user,
             label: label,
             addressLine1: addressLine1,
@@ -47,7 +48,7 @@ exports.getAddresses = async (req, res) => {
 exports.updateAddress = async (req, res) => {
     try {
         const addressId = req.params.id;
-        const { user, label, addressLine1, addressLine2, city, state, postalCode, phoneNumber, isDefault } = req.body;
+        const { name,user, label, addressLine1, addressLine2, city, state, postalCode, phoneNumber, isDefault } = req.body;
 
         // If the user sets the address as default, unset the other defaults
         if (isDefault) {
@@ -59,7 +60,7 @@ exports.updateAddress = async (req, res) => {
 
         const updatedAddress = await Address.findOneAndUpdate(
             { _id: addressId, user: user },  // Ensure the address belongs to the user
-            { label, addressLine1, addressLine2, city, state, postalCode, phoneNumber, isDefault },
+            { name,label, addressLine1, addressLine2, city, state, postalCode, phoneNumber, isDefault },
             { new: true }  // Return the updated document
         );
 
@@ -85,5 +86,21 @@ exports.deleteAdress = async (req, res) => {
         res.status(200).json({ message: 'Address deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting address', error: error.message });
+    }
+}
+
+exports.getAddress = async(req,res) => {
+    try{
+        const addressId = req.params.id;
+
+        const userAddress = await Address.findOne({ _id: addressId });
+        if (!userAddress) {
+            return res.status(404).json({ message: 'Address not found' });
+        }
+
+        res.status(200).json({message:'Address fetched successfully',userAddress});
+
+    }catch (error){
+        res.status(500).json({ message: 'Error fetching address', error: error.message });
     }
 }

@@ -21,7 +21,7 @@ exports.createOrder = async (req, res) => {
             user: user,
             items: cart.items,
             totalPrice: cart.totalPrice,
-            deliveryAddress: `${address.addressLine1}, ${address.addressLine2}, ${address.city}, ${address.state}, ${address.postalCode},${address.phoneNumber}`,
+            deliveryAddress: `${address.name},${address.addressLine1}, ${address.addressLine2}, ${address.city}, ${address.state}, ${address.postalCode},${address.phoneNumber}`,
             paymentMethod: paymentMethod,
             paymentStatus: 'Pending',
             orderStatus: 'Pending'
