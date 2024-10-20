@@ -78,10 +78,20 @@ exports.updateAddress = async (req, res) => {
 exports.deleteAdress = async (req, res) => {
     try {
         const addressId = req.params.id;
-
         const deletedAddress = await Address.findOneAndDelete({ _id: addressId });
         if (!deletedAddress) {
             return res.status(404).json({ message: 'Address not found' });
+        }
+         // Check if the deleted address was the default
+         if (deletedAddress.isDefault) {
+            // Find the user's other addresses
+            const remainingAddresses = await Address.find({ user: deletedAddress.user });
+
+            if (remainingAddresses.length > 0) {
+                // If other addresses are available, make the first one default
+                remainingAddresses[0].isDefault = true;
+                await remainingAddresses[0].save();
+            }
         }
 
         res.status(200).json({ message: 'Address deleted successfully' });
