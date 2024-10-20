@@ -20,6 +20,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true // Price is required for the product
   },
+  mrp: {
+    type: Number,
+    required: true // Price is required for the product
+  },
   stock: {
     type: Number,
     required: true, // Stock quantity is required

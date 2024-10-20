@@ -39,7 +39,7 @@ exports.createOrder = async (req, res) => {
 exports.getUserOrders = async (req, res) => {
     try {
         const orders = await Order.find({ user: req.params.id });
-        res.json(orders);
+        res.status(200).json({message:'Order fetched Successfully',orders});
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
@@ -52,7 +52,7 @@ exports.getOrderById = async (req, res) => {
     try {
         const order = await Order.findById(id);
         if (!order) return res.status(404).json({ message: 'Order not found' });
-        res.json(order);
+        res.status(200).json({message:'Order fetched Successfully',order});
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }

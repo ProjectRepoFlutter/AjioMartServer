@@ -3,14 +3,14 @@ const Category = require('../models/category');
 
 // Create a new product
 exports.createProduct = async (req, res) => {
-    const { name,productId, description, price, categoryId, stock, image } = req.body;
+    const { name,productId, description, price,mrp, categoryId, stock, image } = req.body;
 
     try {
         const categoryExists = await Category.findOne({ categoryId:categoryId });
         if (!categoryExists) {
             return res.status(400).json({ error: 'Invalid categoryId: Category not found' });
         }
-        const product = new Product({ name,productId, description, price, categoryId, stock, image });
+        const product = new Product({ name,productId, description, price,mrp, categoryId, stock, image });
         await product.save();
         res.status(201).json({ message: 'Product created successfully', product });
     } catch (err) {

@@ -43,7 +43,7 @@ exports.updateCategory = async (req, res) => {
     try {
         const updatedCategory = await Category.updateOne({categoryId:id},{$set: req.body}, { new: true });
         if (updatedCategory.matchedCount==0) return res.status(404).json({ message: 'Category not found' });
-        res.json({ message: 'Category updated successfully', updatedCategory });
+        res.status(200).json({ message: 'Category updated successfully', updatedCategory });
     } catch (err) {
         res.status(400).json({ message: 'Error updating category', error: err.message });
     }

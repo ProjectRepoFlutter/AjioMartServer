@@ -61,37 +61,22 @@ exports.registerUser = async (req, res) => {
       if (existingUser) {
         return res.status(400).json({ message: 'User already exists' });
       }
-
-      // Generate a verification code
-      // console.log("Generating Verification");
-      // const verificationCode = crypto.randomBytes(3).toString('hex'); // Generate a random verification code
-
       // Create a new user
       console.log("Generating user");
       const user = new User({ email, phone, firstName, lastName });
       await user.save();
-    }else{
+    } else {
       const existingUser = await User.findOne({ phone: phone });
-      if(!phone || !/^[6-9]\d{9}$/.test(phone)){
-        return res.status(400).json({message:'Invalid mobile number format. It must be a 10-digit number'})
+      if (!phone || !/^[6-9]\d{9}$/.test(phone)) {
+        return res.status(400).json({ message: 'Invalid mobile number format. It must be a 10-digit number' })
       }
       if (existingUser) {
         return res.status(400).json({ message: 'User already exists' });
       }
 
-      // Generate a verification code
-      // console.log("Generating Verification");
-      // const verificationCode = crypto.randomBytes(3).toString('hex'); // Generate a random verification code
-
-      // Create a new user
-      console.log("Generating user");
       const user = new User({ email, phone, firstName, lastName });
       await user.save();
     }
-    // // Send verification code
-    // console.log("sending Verification");
-    // await sendVerificationCode(identifier, verificationCode);
-    // console.log("verification sent");
     return res.status(200).json({ message: 'Registration successful! ' });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });
@@ -134,14 +119,6 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    // // Generate a new verification code
-    // const verificationCode = crypto.randomBytes(3).toString('hex');
-    // user.verificationCode = verificationCode;
-    // await user.save();
-
-    // Send verification code
-    // await sendVerificationCode(identifier, verificationCode);
-
     return res.status(200).json({ message: 'Login successful!' });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });
@@ -168,3 +145,29 @@ exports.getUser = async (req, res) => {
     res.status(400).json({ message: 'Error fetching user', error: err.message });
   }
 };
+
+//Update Role
+exports.updateRole = async (req, res) => {
+  try {
+    const { user, role } = req.body;
+    const update = await User.updateOne({_id:user}, { $set: { role: role } }, { new: true });
+    if (update.matchedCount == 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    return res.status(200).json({ message: 'Role Updated', update });
+  } catch (err) {
+    res.status(400).json({ message: 'Error updating role', error: err.message });
+  }
+}
+
+//get all users
+exports.getAllUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    return res.status(200).json({ message: 'Users Fetched', users });
+  } catch (err) {
+    res.status(400).json({ message: 'Error fetching users', error: err.message });
+  }
+}
+
+

@@ -8,6 +8,7 @@ exports.addAddress = async (req, res) => {
             return res.status(400).json({ message: "All required fields must be provided" });
         }
         // If the user sets the new address as default, make sure other addresses are updated
+        const addresses = await Address.find({ user: user });
         if (isDefault) {
             await Address.updateMany(
                 { user: user },
@@ -25,7 +26,7 @@ exports.addAddress = async (req, res) => {
             state: state,
             postalCode: postalCode,
             phoneNumber: phoneNumber,
-            isDefault: isDefault
+            isDefault: isDefault || addresses.length === 0
         });
 
         const savedAddress = await newAddress.save();
