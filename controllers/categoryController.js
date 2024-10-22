@@ -41,7 +41,7 @@ exports.updateCategory = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const updatedCategory = await Category.updateOne({categoryId:id},{$set: req.body}, { new: true });
+        const updatedCategory = await Category.updateOne({_id:id},{$set: req.body}, { new: true });
         if (updatedCategory.matchedCount==0) return res.status(404).json({ message: 'Category not found' });
         res.status(200).json({ message: 'Category updated successfully', updatedCategory });
     } catch (err) {
@@ -55,7 +55,7 @@ exports.deleteCategory = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletedCategory = await Category.deleteOne({categoryId:id});
+        const deletedCategory = await Category.deleteOne({_id:id});
         if (deletedCategory.deletedCount==0) return res.status(404).json({ message: 'Category not found' });
         res.json({ message: 'Category deleted successfully' });
     } catch (err) {
