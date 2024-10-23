@@ -150,7 +150,7 @@ exports.getUser = async (req, res) => {
 exports.updateRole = async (req, res) => {
   try {
     const { user, role } = req.body;
-    const update = await User.updateOne({_id:user}, { $set: { role: role } }, { new: true });
+    const update = await User.updateOne({ _id: user }, { $set: { role: role } }, { new: true });
     if (update.matchedCount == 0) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -167,6 +167,16 @@ exports.getAllUser = async (req, res) => {
     return res.status(200).json({ message: 'Users Fetched', users });
   } catch (err) {
     res.status(400).json({ message: 'Error fetching users', error: err.message });
+  }
+}
+
+//fetch Delivery Boy
+exports.fetchDeliveryBoy = async (req, res) => {
+  try {
+    const deliveryBoys = await User.find({ role: 'DeliveryBoy' });
+      return res.status(200).json({ message: 'Delivery Boys Fetched', deliveryBoys });
+    } catch (err) {
+      res.status(400).json({ message: 'Error fetching delivery boys', error: err.message });
   }
 }
 

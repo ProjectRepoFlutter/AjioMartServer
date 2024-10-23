@@ -39,7 +39,7 @@ exports.createOrder = async (req, res) => {
 exports.getUserOrders = async (req, res) => {
     try {
         const orders = await Order.find({ user: req.params.id });
-        res.status(200).json({message:'Order fetched Successfully',orders});
+        res.status(200).json({ message: 'Order fetched Successfully', orders });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
@@ -52,7 +52,7 @@ exports.getOrderById = async (req, res) => {
     try {
         const order = await Order.findById(id);
         if (!order) return res.status(404).json({ message: 'Order not found' });
-        res.status(200).json({message:'Order fetched Successfully',order});
+        res.status(200).json({ message: 'Order fetched Successfully', order });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
@@ -80,3 +80,62 @@ exports.updateOrder = async (req, res) => {
         res.status(500).json({ message: 'Error updating order status', error: error.message });
     }
 }
+
+//Get all orders
+exports.getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.find();
+        return res.status(200).json({ message: 'Orders Fetched', orders });
+    } catch (err) {
+        res.status(400).json({ message: 'Error fetching orders', error: err.message });
+    }
+}
+
+//Assign Order to delievery boy
+exports.assignOrder = async (req, res) => {
+    try {
+        const { orderId, deliveryBoyId } = req.body;
+        // const adminId = req.params.id;  // Assume the admin making the request has their ID in req.userId
+
+        // // 1. Check if the admin user has the right role
+        // const adminUser = await User.findById(adminId);
+        // if (!adminUser || (adminUser.role !== 'Admin' && adminUser.role !== 'SuperUser')) {
+        //     return res.status(403).json({ message: 'Unauthorized: Only Admins or SuperUsers can assign orders' });
+        // }
+
+        // 2. Check if the order exists
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // 3. Check if the delivery boy exists and has the 'DeliveryBoy' role
+        const deliveryBoy = await User.findById(deliveryBoyId);
+        if (!deliveryBoy || deliveryBoy.role !== 'DeliveryBoy') {
+            return res.status(404).json({ message: 'Delivery boy not found or role is incorrect' });
+        }
+
+        // 4. Check if the delivery boy is available
+        //   if (deliveryBoy.status !== 'available') {
+        //     return res.status(400).json({ message: 'Delivery boy is not available' });
+        //   }
+
+        // 5. Assign the order to the delivery boy
+        order.assignedDeliveryBoy = deliveryBoyId;
+        order.orderStatus = 'assigned';
+
+        // Mark the delivery boy as busy
+        //   deliveryBoy.status = 'busy';
+
+        // Save the updates to both the order and the delivery boy
+        await order.save();
+        await deliveryBoy.save();
+
+        // (Optional) Send a notification to the delivery boy about the new assignment
+
+        res.status(200).json({ message: 'Order assigned successfully', order });
+    } catch (error) {
+        console.error('Error assigning order:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
