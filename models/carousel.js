@@ -7,10 +7,10 @@ const carouselSchema = new Schema({
     type: String,
     required: true
   },
-  imageUrl: {
+  imageUrl: [{
     type: String,
     required: true
-  },
+  }],
   description: {
     type: String,
     required: false

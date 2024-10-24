@@ -993,3 +993,225 @@ paths:
                     type: string
                   error:
                     type: string
+  /sliders:
+    get:
+      summary: Retrieve all sliders
+      tags:
+        - Slider
+      responses:
+        '200':
+          description: A list of sliders
+          content:
+            application/json:
+              schema:
+                type: array
+                
+    post:
+      summary: Create a new slider
+      tags:
+        - Slider
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Slider'
+      responses:
+        '201':
+          description: Slider created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slider'
+  /sliders/{id}:
+    get:
+      summary: Retrieve a single slider by ID
+      tags:
+        - Slider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Slider details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slider'
+    put:
+      summary: Update a slider by ID
+      tags:
+        - Slider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Slider'
+      responses:
+        '200':
+          description: Slider updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slider'
+    delete:
+      summary: Delete a slider by ID
+      tags:
+        - Slider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Slider deleted successfully
+  carousels/:
+    get:
+      summary: Get all carousel items
+      operationId: getCarousels
+      tags:
+        - Carousels
+      responses:
+        '200':
+          description: A list of carousel items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "1"
+                    title:
+                      type: string
+                      example: "Sample Carousel Item"
+                    imageUrl:
+                      type: string
+                      example: "http://example.com/image.jpg"
+                    description:
+                      type: string
+                      example: "This is a description of the carousel item."
+  
+    post:
+      summary: Create a new carousel item
+      operationId: createCarousel
+      tags:
+        - Carousels
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "New Carousel Item"
+                imageUrl:
+                  type: string
+                  example: "http://example.com/new-image.jpg"
+                description:
+                  type: string
+                  example: "This is a description for the new carousel item."
+      responses:
+        '201':
+          description: Carousel item created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "2"
+                  title:
+                    type: string
+                    example: "New Carousel Item"
+                  imageUrl:
+                    type: string
+                    example: "http://example.com/new-image.jpg"
+                  description:
+                    type: string
+                    example: "This is a description for the new carousel item."
+
+  /{id}:
+    put:
+      summary: Update a carousel item by ID
+      operationId: updateCarousel
+      tags:
+        - Carousels
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the carousel item to update
+          schema:
+            type: string
+            example: "1"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "Updated Carousel Item"
+                imageUrl:
+                  type: string
+                  example: "http://example.com/updated-image.jpg"
+                description:
+                  type: string
+                  example: "This is an updated description for the carousel item."
+      responses:
+        '200':
+          description: Carousel item updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "1"
+                  title:
+                    type: string
+                    example: "Updated Carousel Item"
+                  imageUrl:
+                    type: string
+                    example: "http://example.com/updated-image.jpg"
+                  description:
+                    type: string
+                    example: "This is an updated description for the carousel item."
+
+    delete:
+      summary: Delete a carousel item by ID
+      operationId: deleteCarousel
+      tags:
+        - Carousels
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the carousel item to delete
+          schema:
+            type: string
+            example: "1"
+      responses:
+        '204':
+          description: Carousel item deleted successfully
+        '404':
+          description: Carousel item not found
