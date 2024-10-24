@@ -9,6 +9,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const sliderRoutes = require('./routes/sliderRoutes');
+const carouselRoutes = require('./routes/carouselRoutes');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -31,6 +32,7 @@ app.use('/cart', cartRoutes);
 app.use('/address', addressRoutes);
 app.use('/orders',orderRoutes);
 app.use('/sliders',sliderRoutes);
+app.use('/carousels',carouselRoutes);
 
 // Start the server
 app.listen(PORT, () => {
