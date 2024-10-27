@@ -59,7 +59,7 @@ exports.updateProduct = async (req, res) => {
     try {
         const updatedProduct = await Product.updateOne({_id:id},{$set: req.body}, { new: true });
         if (updatedProduct.matchedCount==0) return res.status(404).json({ message: 'Product not found' });
-        res.json({ message: 'Product updated successfully', updatedProduct });
+        res.status(200).json({ message: 'Product updated successfully', updatedProduct });
     } catch (err) {
         res.status(400).json({ message: 'Error updating product', error: err.message });
     }
