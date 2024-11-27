@@ -2,7 +2,7 @@ const Order = require('../models/order');
 const Cart = require('../models/cart');
 const User = require('../models/User');
 const Address = require('../models/address')
-
+const Delivery = require('../models/deliveryfee')
 // Create a new order
 exports.createOrder = async (req, res) => {
 
@@ -16,7 +16,10 @@ exports.createOrder = async (req, res) => {
         if (!cart || cart.items.length === 0) {
             return res.status(400).json({ message: 'Cart is empty' });
         }
-
+        const delivery = await Delivery.findOne();
+        if(cart.totalPrice<delivery.min_free_delivery){
+            cart.totalPrice += delivery.delivery_fee;
+        }
         const order = new Order({
             user: user,
             items: cart.items,
