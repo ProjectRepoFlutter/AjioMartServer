@@ -10,6 +10,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const addressRoutes = require('./routes/addressRoutes');
 const sliderRoutes = require('./routes/sliderRoutes');
 const carouselRoutes = require('./routes/carouselRoutes');
+const deliveryfeeRoutes = require('./routes/deliveryfeeRoutes')
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use('/address', addressRoutes);
 app.use('/orders',orderRoutes);
 app.use('/sliders',sliderRoutes);
 app.use('/carousels',carouselRoutes);
+app.use('/deliveryfee',deliveryfeeRoutes);
 
 // Start the server
 app.listen(PORT, () => {
