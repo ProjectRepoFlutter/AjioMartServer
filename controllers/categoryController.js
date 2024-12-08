@@ -39,7 +39,16 @@ exports.getCategoryById = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
-
+// Get all categories by super category id
+exports.getSuperCategoryCategories = async (req, res) => {
+    const{ id } = req.params; 
+    try {
+        const superCat = await Category.find({superCategoryId:id});
+        res.json(superCat);
+    } catch (err) {
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
 // Update a category
 exports.updateCategory = async (req, res) => {
     const { id } = req.params;
