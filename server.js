@@ -11,6 +11,7 @@ const addressRoutes = require('./routes/addressRoutes');
 const sliderRoutes = require('./routes/sliderRoutes');
 const carouselRoutes = require('./routes/carouselRoutes');
 const deliveryfeeRoutes = require('./routes/deliveryfeeRoutes')
+const superCategoryRoutes = require('./routes/superCategoryRoutes')
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/categories', categoryRoutes);
+app.use('/superCategories',superCategoryRoutes);
 app.use('/cart', cartRoutes);
 app.use('/address', addressRoutes);
 app.use('/orders',orderRoutes);

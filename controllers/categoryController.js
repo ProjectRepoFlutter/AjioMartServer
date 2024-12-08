@@ -1,11 +1,15 @@
 const Category = require('../models/category');
-
+const superCategory = require('../models/superCategory')
 // Create a new category
 exports.createCategory = async (req, res) => {
-    const { categoryId,name, description,imageUrl } = req.body;
+    const { categoryId,name,superCategoryId, description,imageUrl } = req.body;
 
     try {
-        const category = new Category({ categoryId:categoryId,name:name, description:description,imageUrl:imageUrl });
+        const superCategoryexists = await superCategory.findOne({superCategoryId:superCategoryId});
+        if(!superCategoryexists){
+            return res.status(400).json({ error: 'Invalid superCategoryId: superCategory not found' });
+        }
+        const category = new Category({ categoryId:categoryId,name:name,superCategoryId:superCategoryId, description:description,imageUrl:imageUrl });
         await category.save();
         res.status(201).json({ message: 'Category created successfully', category });
     } catch (err) {
@@ -39,8 +43,18 @@ exports.getCategoryById = async (req, res) => {
 // Update a category
 exports.updateCategory = async (req, res) => {
     const { id } = req.params;
-
+    const { superCategoryId } = req.body;
     try {
+        if (superCategoryId) {
+            const existingSuperCategory = await superCategory.findOne({ superCategoryId:superCategoryId });
+
+            // If superCategoryId is invalid, return an error response
+            if (!existingSuperCategory) {
+                return res.status(400).json({ 
+                    message: 'Invalid superCategoryId. No  Super category with this ID exists.' 
+                });
+            }
+        }
         const updatedCategory = await Category.updateOne({_id:id},{$set: req.body}, { new: true });
         if (updatedCategory.matchedCount==0) return res.status(404).json({ message: 'Category not found' });
         res.status(200).json({ message: 'Category updated successfully', updatedCategory });

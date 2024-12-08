@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-const categorySchema = new mongoose.Schema({
-    categoryId: {
+const superCategorySchema = new mongoose.Schema({
+    superCategoryId: {
         type: String,
         required: true,
         unique: true, // Ensures categoryId is unique
@@ -12,10 +12,6 @@ const categorySchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true
-    },
-    superCategoryId:{
-        type: String,
-        required: true
     },
     description: {
         type: String,
@@ -35,11 +31,11 @@ const categorySchema = new mongoose.Schema({
 });
 
 // Middleware to set 'updatedAt' on document update
-categorySchema.pre('save', function (next) {
+superCategorySchema.pre('save', function (next) {
     this.updatedAt = Date.now();
     next();
   });
 
-const Category = mongoose.model('Category', categorySchema);
+const Category = mongoose.model('SuperCategory', superCategorySchema);
 
 module.exports = Category;

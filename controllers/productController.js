@@ -55,8 +55,18 @@ exports.getProductById = async (req, res) => {
 // Update a product
 exports.updateProduct = async (req, res) => {
     const { id } = req.params;
-
+    const { categoryId } = req.body;
     try {
+        if (categoryId) {
+            const existingCategory = await Category.findOne({ categoryId });
+
+            // If superCategoryId is invalid, return an error response
+            if (!existingCategory) {
+                return res.status(400).json({ 
+                    message: 'Invalid CategoryId. No category with this ID exists.' 
+                });
+            }
+        }
         const updatedProduct = await Product.updateOne({_id:id},{$set: req.body}, { new: true });
         if (updatedProduct.matchedCount==0) return res.status(404).json({ message: 'Product not found' });
         res.status(200).json({ message: 'Product updated successfully', updatedProduct });
