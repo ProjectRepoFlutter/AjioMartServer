@@ -37,6 +37,10 @@ const productSchema = new mongoose.Schema({
     type: String, // Optional field for storing the product image URL
     trim: true
   },
+  additionalImages: {
+    type: [String], // Array of strings for additional image URLs
+    default: [] // Default is an empty array
+  },  
   rating: {
     type: Number,
     min: 0,
